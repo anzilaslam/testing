@@ -1,0 +1,22 @@
+#define ANZIL_FIRMWARE_VERSION "v1.0.0"
+#define LED_PIN 13  // Change if using another pin
+
+void setup() {
+  Serial.begin(9600);
+  delay(100);  // Give time for serial monitor to initialize
+  Serial.println("Arduino Starting...");
+  Serial.print("ANZIL-Firmware Version: ");
+  Serial.println(ANZIL_FIRMWARE_VERSION);
+
+  pinMode(LED_PIN, OUTPUT);  // Set LED pin as output
+}
+
+void loop() {
+  digitalWrite(LED_PIN, HIGH);  // Turn LED ON
+  Serial.println("LED ON");
+  delay(5000);                  // Wait 5 seconds
+
+  digitalWrite(LED_PIN, LOW);   // Turn LED OFF
+  Serial.println("LED OFF");
+  delay(10000);                 // Wait 10 seconds
+}

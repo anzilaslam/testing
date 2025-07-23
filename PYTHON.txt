@@ -1,0 +1,42 @@
+import serial
+import time
+import re
+
+# Reference string to match words from
+reference = "ANZIL-Firmware Version: v1.0.0"
+reference_words = re.findall(r'\b\w+\b', reference)  # Split into individual words
+
+# Serial config
+arduino_port = 'COM29'  # Replace with your actual port
+baud_rate = 9600
+
+
+try:
+    ser = serial.Serial(arduino_port, baud_rate, timeout=1)
+    time.sleep(2)  # Wait for Arduino to boot
+
+    print(f"Listening on {arduino_port}...\n")
+
+    while True:
+        line = ser.readline().decode('utf-8').strip()
+
+        if not line:
+            continue  # Skip empty lines
+
+        # Check if any word from reference is in the line
+        matched = any(re.search(rf'\b{re.escape(word)}\b', line) for word in reference_words)
+
+        if matched:
+            print(f"✅ Match successful for line: {line}")
+        # Don't print anything for unmatched lines like "LED ON/OFF"
+
+except serial.SerialException as e:
+    print(f"❌ Serial error: {e}")
+
+except KeyboardInterrupt:
+    print("\n🔌 Program interrupted by user.")
+
+finally:
+    if 'ser' in locals() and ser.is_open:
+        ser.close()
+        print("Serial port closed.")
